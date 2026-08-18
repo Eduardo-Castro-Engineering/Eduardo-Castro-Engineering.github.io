@@ -420,6 +420,95 @@ table.piv-tab{width:100%;border-collapse:collapse;font:500 .64rem/1.3 var(--mono
   .bub-cue{order:9!important;margin-top:4px}
   
 }
+/* ============================================================
+   PHONES
+   The page is desktop-first, and the design editor wrote literal
+   font-size values into inline styles that the clamp()s in the same
+   declaration can no longer win against — so type stayed at desktop
+   size on a 375px screen. html/body are overflow-x:clip, which means
+   anything wider than the viewport is not scrollable-to, it is just
+   gone. Everything here is scoped to small screens; the desktop
+   layout is untouched.
+   ============================================================ */
+@media (max-width:760px){
+
+  /* One gutter for every section, header included, so edges line up.
+     Matched on "1180px" alone, not "max-width:1180px" — the runtime
+     re-serialises inline styles with a space after the colon, so the
+     longer string does not match in the live DOM. */
+  [style*="1180px"]{padding-left:18px!important;padding-right:18px!important}
+
+  /* header — brand on one line, the switch full-width under it */
+  header [style*="1180px"]{padding-top:11px!important;padding-bottom:11px!important;gap:11px!important}
+
+  /* grid children default to min-width:auto, so a wide child stretches
+     its track past the container instead of shrinking inside it */
+  .restsec > div,.jrow,.jrow > *{min-width:0!important}
+  .msw{width:100%!important;gap:11px!important}
+  .msw-track{width:100%!important}
+  .msw-b{padding:17px 6px 16px!important}      /* was 29px tall, now ~45px */
+  .msw-b b{font-size:.72rem!important;letter-spacing:.07em!important}
+
+  /* hero */
+  .hero-grid{padding:36px 0 40px!important;gap:24px!important}
+  .hero-grid > div{max-width:100%!important}
+  .hero-grid h1{font-size:clamp(2.9rem,16.5vw,5.6rem)!important;margin-bottom:16px!important}
+  .hero-stats{margin-bottom:26px!important}
+  .hero-stats > div{padding:13px 10px 12px!important}
+  .hero-stats > div:first-child{padding-left:0!important}
+  .hero-stats > div:last-child{padding-right:0!important}
+  .hero-stats b{font-size:1.95rem!important}
+
+  /* jump links — the 470px cap and the 36px indent both overflowed */
+  nav[aria-label="Jump to section"]{max-width:100%!important;gap:10px!important;margin-bottom:28px!important}
+  .pk{padding:16px 18px!important;gap:12px!important;transform:rotate(-.5deg)!important}
+  .pk:nth-of-type(2){margin:-16px 0 0 0!important;transform:rotate(.4deg)!important}
+  .pk strong{font-size:1.45rem!important;text-align:left!important}
+
+  /* project titles frozen at 80px/45px by the editor */
+  .pj h3{font-size:clamp(1.7rem,7.6vw,2.6rem)!important}
+
+  /* papers — the fixed 220px citation column moves to its own row */
+  .pub{grid-template-columns:auto minmax(0,1fr)!important;gap:0 14px!important;padding:18px 0!important}
+  .pub .pub-i{margin-left:0!important}
+  .pub > span:last-child{grid-column:2!important;text-align:left!important;margin-top:9px}
+
+  /* touch targets: nothing smaller than 44px */
+  .tl{min-height:44px;display:inline-flex!important;align-items:center}
+  .pub a{display:inline-block;padding:13px 0}
+  .big-mail,.pdf-dl{min-height:44px;display:inline-flex!important;align-items:center}
+  /* the address is one unbreakable 24-char word; its clamp floor of
+     1.5rem still ran off a 320px screen, so give it a smaller floor */
+  .big-mail{font-size:clamp(1.05rem,5.2vw,1.9rem)!important;flex-wrap:wrap;gap:10px!important}
+  .pdf-dl{padding-left:14px!important;padding-right:14px!important}
+  .bub-more a{display:inline-block;padding:12px 0}
+  .bub-cue{font-size:.72rem!important;padding:14px 18px!important}
+
+  /* The editor's smallest mono labels land at 9–11px, which is below
+     what is comfortably readable on a phone. Inline styles set them,
+     so they are matched on the declaration itself and lifted to ~11.5px.
+     Each value is distinct as a substring — ".62rem" does not contain
+     ".6rem" — so these rules do not overlap. */
+  [style*="var(--mono)"][style*=".58rem"],
+  [style*="var(--mono)"][style*=".6rem"]{font-size:.7rem!important}
+  [style*="var(--mono)"][style*=".62rem"],
+  [style*="var(--mono)"][style*=".64rem"],
+  [style*="var(--mono)"][style*=".66rem"],
+  [style*="var(--mono)"][style*=".68rem"]{font-size:.72rem!important}
+}
+
+/* Narrow phones: three stat columns stop fitting, so stack them and
+   give the labels the width to be legible instead of 9.9px. */
+@media (max-width:430px){
+  .hero-stats{grid-template-columns:1fr!important}
+  .hero-stats > div{display:flex!important;align-items:baseline;gap:12px;
+    padding:11px 0!important;border-right:0!important;
+    border-bottom:1.5px solid color-mix(in srgb,var(--on-band) 18%,transparent)}
+  .hero-stats > div:last-child{border-bottom:0!important}
+  .hero-stats b{font-size:1.8rem!important;min-width:72px}
+  .hero-stats span{font-size:.7rem!important;letter-spacing:.1em!important}
+}
+
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition-duration:.01ms!important}
   html{scroll-behavior:auto}
@@ -478,7 +567,7 @@ table.piv-tab{width:100%;border-collapse:collapse;font:500 .64rem/1.3 var(--mono
           <h1 style="font: 900 clamp(2.6rem,7.4vw,5.4rem)/.9 var(--dsp); letter-spacing: -.045em; text-transform: uppercase; margin: 0 0 20px; animation: riseFar .8s .16s var(--ease) both; font-size: 150px">Eduardo<br>Castro</h1>
           
 
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:2px solid color-mix(in srgb,var(--on-band) 26%,transparent);border-bottom:2px solid color-mix(in srgb,var(--on-band) 26%,transparent);margin-bottom:34px;animation:rise .8s .34s var(--ease) both">
+          <div class="hero-stats" style="display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:2px solid color-mix(in srgb,var(--on-band) 26%,transparent);border-bottom:2px solid color-mix(in srgb,var(--on-band) 26%,transparent);margin-bottom:34px;animation:rise .8s .34s var(--ease) both">
             <div style="padding:16px 18px 15px 0;border-right:1.5px solid color-mix(in srgb,var(--on-band) 18%,transparent)">
               <b style="display: block; font: 900 2.5rem/1 var(--dsp); letter-spacing: -.045em; color: var(--band-hi); font-size: 40px">5</b>
               <span style="font:600 .62rem/1.4 var(--mono);letter-spacing:.13em;text-transform:uppercase;color:var(--band-dim)">Published papers</span>
