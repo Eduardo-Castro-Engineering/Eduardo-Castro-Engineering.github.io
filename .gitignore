@@ -1,0 +1,12 @@
+# OS / editor cruft
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+*.swp
+*~
+
+# Claude Design working files — not part of the published site
+.thumbnail
+uploads/
+reference/
