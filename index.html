@@ -34,17 +34,38 @@
 }
 </script>
 
+<!-- support.js hides the raw <x-dc> template immediately and does not render
+     anything until React resolves, so React sat on the critical path to first
+     paint — and it was being fetched from unpkg, adding a third-party DNS +
+     TLS round trip before the page could show. window.__resources is the
+     runtime's own override hook; these copies are byte-identical to unpkg's
+     (their SHA-384 hashes match the ones support.js carries). -->
+<link rel="preload" as="script" href="./vendor/react.production.min.js">
+<link rel="preload" as="script" href="./vendor/react-dom.production.min.js">
+
+<!-- These four lived inside <helmet> in the body. The runtime copies helmet
+     into <head> at boot, which made the browser fetch and re-execute each of
+     them a second time, and sitting in the body meant the font stylesheet was
+     discovered late. Declared here they load once, start immediately, and
+     `defer` keeps the two libraries off the parser's critical path — the map
+     that needs them is imported well after DOMContentLoaded. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin="anonymous">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira:wght@500;600;700;800;900&amp;family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=Azeret+Mono:wght@400;500;600;700&amp;display=swap">
+<script defer src="https://unpkg.com/d3@7.9.0/dist/d3.min.js" integrity="sha384-CjloA8y00+1SDAUkjs099PVfnY2KmDC2BZnws9kh8D/lX1s46w6EPhpXdqMfjK6i" crossorigin="anonymous"></script>
+<script defer src="https://unpkg.com/topojson-client@3.1.0/dist/topojson-client.min.js" integrity="sha384-Ukv1p/xTma6P4/2bY5KzWBw+ydSpXmhCMtyciIQVDJ1RmOxtCYNMF1uXT9T63H67" crossorigin="anonymous"></script>
+<script>
+window.__resources = {
+  "https://unpkg.com/react@18.3.1/umd/react.production.min.js": "./vendor/react.production.min.js",
+  "https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js": "./vendor/react-dom.production.min.js"
+};
+</script>
 <script src="./support.js"></script>
 </head>
 <body>
 <x-dc>
 <helmet>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira:wght@500;600;700;800;900&amp;family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=Azeret+Mono:wght@400;500;600;700&amp;display=swap">
-<script src="https://unpkg.com/d3@7.9.0/dist/d3.min.js" integrity="sha384-CjloA8y00+1SDAUkjs099PVfnY2KmDC2BZnws9kh8D/lX1s46w6EPhpXdqMfjK6i" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/topojson-client@3.1.0/dist/topojson-client.min.js" integrity="sha384-Ukv1p/xTma6P4/2bY5KzWBw+ydSpXmhCMtyciIQVDJ1RmOxtCYNMF1uXT9T63H67" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.min.js" crossorigin="anonymous"></script>
 <script src="./image-slot.js"></script>
 <script src="./chroma-video.js"></script>
 <style>
@@ -649,7 +670,7 @@ table.piv-tab{width:100%;border-collapse:collapse;font:500 .64rem/1.3 var(--mono
 
             <div class="pj-panel" style="position:relative;z-index:1">
               
-            <video class="loopvid" muted="" playsinline="" loop="" preload="auto" src="assets/charger-wireframe-3.mp4" aria-label="Exploded CAD view of the Charger rocket" style="display:block;width:118%;max-width:none;margin-right:-18%;height:min(94vh,900px);object-fit:contain"></video></div>
+            <video class="loopvid" muted="" playsinline="" loop="" preload="metadata" src="assets/charger-wireframe-3.mp4" aria-label="Exploded CAD view of the Charger rocket" style="display:block;width:118%;max-width:none;margin-right:-18%;height:min(94vh,900px);object-fit:contain"></video></div>
           </div>
         </summary>
         <div class="pj-more" style="padding:0 0 52px">
@@ -684,7 +705,7 @@ table.piv-tab{width:100%;border-collapse:collapse;font:500 .64rem/1.3 var(--mono
         <summary>
           <div class="pj-grid" style="position:relative;display:grid;grid-template-columns:minmax(0,1.06fr) minmax(0,1fr);gap:46px;align-items:center;min-height:74vh;padding:44px 0 40px">
             <div class="pj-panel" style="position:relative;z-index:1">
-              <video class="loopvid" muted="" playsinline="" loop="" preload="auto" src="assets/aerobot-wireframe.mp4" aria-label="Exploded CAD view of the Venus aerobot gondola" style="display:block;width:118%;max-width:none;margin-left:-18%;height:min(94vh,900px);object-fit:contain"></video>
+              <video class="loopvid" muted="" playsinline="" loop="" preload="metadata" src="assets/aerobot-wireframe.mp4" aria-label="Exploded CAD view of the Venus aerobot gondola" style="display:block;width:118%;max-width:none;margin-left:-18%;height:min(94vh,900px);object-fit:contain"></video>
             </div>
             <div style="position:relative;z-index:2">
               <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:14px">
@@ -749,7 +770,7 @@ table.piv-tab{width:100%;border-collapse:collapse;font:500 .64rem/1.3 var(--mono
               <span class="pj-cta" style="display:inline-flex;align-items:center;gap:11px;border:2px solid var(--text);border-radius:999px;padding:12px 22px;font:700 .72rem/1 var(--mono);letter-spacing:.13em;text-transform:uppercase;transition:background .26s var(--ease),color .26s var(--ease),border-color .26s var(--ease)"><span>Show </span><i style="font-style:normal;font-size:.9em;transition:transform .3s var(--spring)">▼</i></span>
             </div>
             <div class="pj-panel" style="position:relative">
-              <video class="loopvid" muted="" playsinline="" loop="" preload="auto" src="assets/turbine-wireframe.mp4" aria-label="Exploded CAD view of the modular wind turbine" style="display:block;width:118%;max-width:none;margin-right:-18%;height:min(94vh,900px);object-fit:contain"></video>
+              <video class="loopvid" muted="" playsinline="" loop="" preload="metadata" src="assets/turbine-wireframe.mp4" aria-label="Exploded CAD view of the modular wind turbine" style="display:block;width:118%;max-width:none;margin-right:-18%;height:min(94vh,900px);object-fit:contain"></video>
             </div>
           </div>
         </summary>
@@ -1468,6 +1489,21 @@ class Component extends DCLogic {
     });
 
     // ---- PDFs, drawn in page (a plugin iframe gets blocked in this frame) ----
+    let pdfLibPromise = null;
+    const ensurePdfLib = () => {
+      if (window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
+      if (pdfLibPromise) return pdfLibPromise;
+      pdfLibPromise = new Promise((res, rej) => {
+        const s = document.createElement('script');
+        s.src = 'https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.min.js';
+        s.crossOrigin = 'anonymous';
+        s.onload = () => res(window.pdfjsLib);
+        s.onerror = () => rej(new Error('pdf.js failed to load'));
+        document.head.appendChild(s);
+      });
+      return pdfLibPromise;
+    };
+
     document.querySelectorAll('.docpdf').forEach(d => {
       const hold = d.querySelector('.pdf-doc');
       if (!hold) return;
@@ -1475,8 +1511,10 @@ class Component extends DCLogic {
       d.addEventListener('toggle', async () => {
         if (!d.open || started) return;
         started = true;
-        const lib = window.pdfjsLib;
         const msg = t => { hold.replaceChildren(Object.assign(document.createElement('p'), { className: 'pdf-msg', textContent: t })); };
+        // pdf.js is ~86 KB gzipped and only this panel ever needs it, so it is
+        // fetched the first time one is opened rather than on every visit.
+        const lib = await ensurePdfLib().catch(() => null);
         if (!lib) { msg('Preview unavailable here — use Download.'); return; }
         lib.GlobalWorkerOptions.workerSrc = 'https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
         try {
