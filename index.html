@@ -1438,11 +1438,17 @@ class Component extends DCLogic {
     }
 
     // ---- looping clips (no controls, no play button) ----
+    // ---- looping clips (no controls, no play button) ----
     document.querySelectorAll('.bub-vid,.loopvid').forEach(v => {
       v.muted = true; v.defaultMuted = true; v.volume = 0; v.playsInline = true;
       v.addEventListener('volumechange', () => { if (!v.muted || v.volume) { v.muted = true; v.volume = 0; } });
       if (reduce) { v.loop = false; v.pause(); return; }
-      v.loop = true; v.autoplay = true;
+      // v.autoplay is deliberately NOT set. Autoplay tells the browser to
+      // buffer the clip as soon as it can and overrides preload="metadata",
+      // so all seven downloaded on page load — ~13 MB — even while off-screen
+      // inside a closed panel. The observer below is what actually drives
+      // playback, and a muted play() needs no user gesture.
+      v.loop = true;
       const want = () => { v.dataset.want = '1'; const p = v.play(); if (p) p.catch(() => {}); };
       // some players pause instead of continuing when a loop wraps — resume while still in view
       v.addEventListener('pause', () => { if (v.dataset.want) want(); });
