@@ -62,6 +62,23 @@ window.__resources = {
 };
 </script>
 <script src="./support.js"></script>
+
+<!-- Visit analytics. No cookies, no personal data collected. -->
+<script>
+  // This page carries <link rel="canonical">, and GoatCounter defaults the recorded
+  // path to that value, which strips the query string. Without this override every
+  // resume-tagged visit would be recorded as "/" and the code discarded.
+  window.goatcounter = {
+    path: function (defaultPath) {
+      var m = /[?&]campaign=([A-Z0-9]{6})(?:&|$)/i.exec(window.location.search);
+      return m ? '/r/' + m[1].toUpperCase() : defaultPath;
+    }
+  };
+</script>
+<script data-goatcounter="https://eduardo-castro-engineering.goatcounter.com/count"
+        async src="https://gc.zgo.at/count.v5.js"
+        integrity="sha384-atnOLvQb9t+jTSipvd75X2yginT4PjVbqDdlJAmxMm+wYElFmeR6EmLP5bYeoRVQ"
+        crossorigin="anonymous"></script>
 </head>
 <body>
 <x-dc>
